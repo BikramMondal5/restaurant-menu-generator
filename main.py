@@ -5,9 +5,11 @@ cuisine = st.sidebar.selectbox("Pick a cuisine!", ("Indian", "Italian", "Chinese
 
 if cuisine:
     response = mg.generate_restaurant_name_and_items(cuisine)
-    st.header(response["restaurant_name"])
-    menu_items = response["menu_items"].split(", ")
+    st.header(response["restaurant_name"].strip())
+    menu_items = response["menu_items"].strip().split(", ")
     st.write("***Menu Items:***")
 
     for item in menu_items:
         st.write(f"- {item}")
+
+        

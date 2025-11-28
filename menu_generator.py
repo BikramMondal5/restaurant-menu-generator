@@ -16,7 +16,24 @@ model = ChatGoogleGenerativeAI(
 )
 
 def generate_restaurant_name_and_items(cuisine):
-   return {
-         "restaurant_name": "Gourmet Delight",
-         "menu_items": "Spicy Curry, Tandoori Chicken, Naan Bread"
-   }
+   prompt1 = PromptTemplate(
+      input_variables=["cuisine"],
+        template="I want to open a restaurant for {cuisine} food. Suggest a fancy name for this. Give only one name"
+    )
+   
+   chain1 = LLMChain(llm=model, prompt=prompt1, output_key="restaurant_name")
+        
+   prompt2 = PromptTemplate(
+        input_variables=["restaurant_name"],
+        template="Suggest some menu items for {restaurant_name}. Return it as a comma separated string."
+    )
+   chain2 = LLMChain(llm = model, prompt=prompt2, output_key="menu_items")
+   chain = SequentialChain(
+        chains=[chain1, chain2],
+        input_variables=["cuisine"],
+        output_variables=["restaurant_name", "menu_items"],
+        verbose=True
+    )
+
+   return chain({"cuisine": cuisine})
+
